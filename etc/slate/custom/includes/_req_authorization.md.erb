@@ -1,0 +1,103 @@
+# Authorization
+
+## Get your auth token
+
+> Authorization: Get Auth Token
+
+```json
+{
+  "token": "auth-token-auth-token-...",
+  "refresh_token": "refresh-token-asderw342..."
+}
+```
+```shell
+curl --location --request POST '<%= config[:endpoint] %>/api/users/login' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "username": "{username}",
+    "password": "{password}",
+    "mobile_uid": "xxxxxx"
+}'
+```
+
+This endpoint retrieves your auth token and your refresh token to allow use this service.
+
+### HTTP Request
+
+`POST <%= config[:endpoint] %>/api/users/login`
+
+### Body Parameters (As JSON format)
+
+Parameter | Type \<Format\> | Required | Description
+--------- | --------------- | -------- | -----------
+username | string | true | Your username
+password | string | true | Your password
+mobile_uid | string | false | Current mobile UID. Default NULL
+
+### Response
+
+Attribute | Type \<Format\> | Description
+--------- | --------------- | -----------
+token | string | Authorization token. This token will expire after 20 minutes
+refresh_token | string | Refresh token. This token will expire after 30 minutes
+
+### JWT Payload contains the following data
+
+Attribute | Type | Description
+--------- | ---- | -----------
+id | string | ID of authorized user
+username | string | Username of authorized user
+language | string | Language code of authorized user. Example en_UK
+must_set_password | boolean | Indicates if user was created from other user, and he needs to set his password before initialize session
+
+### Response codes
+
+Code | Description
+---- | -----------
+200 | The user has been logged successfully
+401 | Invalid credentials. User with those credentials not found in our system
+
+## Refresh your auth token
+
+> Authorization: Refresh auth token
+
+```json
+{
+  "token": "auth-token-auth-token-...",
+  "refresh_token": "refresh-token-asderw342..."
+}
+```
+
+```shell
+curl --location --request POST '<%= config[:endpoint] %>/api/users/login/refresh-token' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "refresh_token": "{refresh_token}"
+}'
+```
+
+This endpoint generates a new auth token and a new refresh token with your refresh_token gotten via the login endpoint. It also invalidates the previous auth token
+
+### HTTP Request
+
+`POST <%= config[:endpoint] %>/api/users/login/refresh-token`
+
+### Body Parameters (As JSON format)
+
+Parameter | Required | Description
+--------- | ------- | -----------
+refresh_token | true | Refresh token previously gotten via the login endpoint
+
+### Response
+
+Attribute | Type \<Format\> | Description
+--------- | ---- | -----------
+token | string | Authorization token. This token will expire after 20 minutes
+refresh_token | string | Refresh token. This token will expire after 30 minutes
+
+### Response codes
+
+Code | Description
+---- | -----------
+200 | The user has been logged successfully
+401 | The refresh_token is not valid. It could have expired or have a wrong format

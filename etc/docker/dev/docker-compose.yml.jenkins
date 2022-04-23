@@ -1,0 +1,54 @@
+version: '3'
+
+services:
+  nginx_{{container_name}}:
+    build:
+      context: .
+      dockerfile: etc/docker/dev/nginx/Dockerfile
+    container_name: {{container_name}}-nginx
+    volumes:
+      - .:/app:delegated
+    depends_on:
+      - fpm_{{container_name}}
+    networks:
+      - default-{{network_name_suffix}}
+      - iseazy
+
+  fpm_{{container_name}}:
+    container_name: {{container_name}}-fpm
+    build:
+      context: .
+      dockerfile: etc/docker/dev/fpm/Dockerfile
+    volumes:
+      - .:/app:delegated
+    env_file:
+      - .env
+    networks:
+      - default-{{network_name_suffix}}
+      - iseazy
+    links:
+      - "database_{{container_name}}:database"
+      - "rabbit_{{container_name}}:rabbit"
+
+
+  database_{{container_name}}:
+    build: etc/docker/dev/mariadb
+    container_name: {{container_name}}-mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    networks:
+      - default-{{network_name_suffix}}
+      - iseazy
+
+  rabbit_{{container_name}}:
+    build: etc/docker/dev/rabbitmq
+    container_name: {{container_name}}-rabbitmq
+    networks:
+      - default-{{network_name_suffix}}
+      - iseazy
+
+networks:
+  default-{{network_name_suffix}}:
+  iseazy:
+    external:
+      name: iseazy

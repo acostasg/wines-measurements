@@ -1,0 +1,9 @@
+default:
+  suites:
+    health_checker:
+      paths: [ tests/src/Ui/features/health-checker ]
+      contexts:
+        - IsEazy\DddTestPack\Behat\ApiFeatureContext
+        - IsEazy\DddTestPack\Behat\ApiContext\ApiRequestContext
+        - IsEazy\DddTestPack\Behat\ApiContext\ApiResponseContext
+        #- IsEazy\DddTestPack\Behat\FixturesContext\AliceHautelookFixturesContext

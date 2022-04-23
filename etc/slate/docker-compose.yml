@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  stale:
+    container_name: iseazy-wines-mesasurements-api-doc
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 4567:4567
+    volumes:
+      - ./build:/srv/slate/build
+      - ./custom/layouts:/srv/slate/source/layouts
+      - ./custom/includes:/srv/slate/source/includes
+      - ./custom/Makefile:/srv/slate/source/Makefile
+      - ./custom/stylesheets:/srv/slate/source/custom_stylesheets
+      - ./custom/images/logo.png:/srv/slate/source/images/logo.png
+      - ./custom/index.html.md.erb:/srv/slate/source/index.html.md.erb
+      - ./custom/_append_to_config.rb:/srv/slate/custom/_append_to_config.rb

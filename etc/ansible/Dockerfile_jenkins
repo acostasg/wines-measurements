@@ -1,0 +1,8 @@
+FROM iseazytech/ansible:3.0-dev
+
+ARG ANSIBLE_DEPLOY_BRANCH
+ENV ANSIBLE_DEPLOY_BRANCH=$ANSIBLE_DEPLOY_BRANCH
+
+WORKDIR /var/www/ansible
+
+COPY ./server/ /var/www/ansible/

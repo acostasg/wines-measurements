@@ -1,0 +1,73 @@
+version: '3'
+
+services:
+  nginx:
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: etc/docker/dev/nginx/Dockerfile
+    container_name: iseazy-wines-mesasurements-nginx
+    ports:
+      - "8899:80"
+    volumes:
+      - .:/app:delegated
+    depends_on:
+      - fpm
+    networks:
+      - default
+      - iseazy
+
+  fpm:
+    restart: unless-stopped
+    container_name: iseazy-wines-mesasurements-fpm
+    build:
+      context: .
+      dockerfile: etc/docker/dev/fpm/Dockerfile
+    ports:
+      - "2229:22"
+      - "9099:9000"
+    volumes:
+      - .:/app:delegated
+    env_file:
+      - .env
+    networks:
+      - default
+      - iseazy
+
+  database:
+    restart: unless-stopped
+    build: etc/docker/dev/mariadb
+    container_name: iseazy-wines-mesasurements-mariadb
+    volumes:
+      - mariadb_data:/var/lib/mysql:delegated
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - 33069:3306
+    networks:
+      - default
+      - iseazy
+
+  rabbit:
+    restart: unless-stopped
+    build: etc/docker/dev/rabbitmq
+    container_name: iseazy-wines-mesasurements-rabbitmq
+    depends_on:
+      - fpm
+    ports:
+      - "15679:15672"
+      - "1889:1883"
+    volumes:
+      - rabbit_data:/var/lib/rabbitmq
+    networks:
+      - default
+      - iseazy
+
+networks:
+  iseazy:
+    external:
+      name: iseazy
+
+volumes:
+  rabbit_data:
+  mariadb_data:

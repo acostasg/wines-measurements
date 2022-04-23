@@ -1,0 +1,17 @@
+- name: Ensure supervisor is installed.
+  apt:
+    name: "supervisor"
+    state: present
+
+- name: set template supervisor
+  template:
+    src: project_external_supervisord.conf.j2
+    dest: "/etc/supervisor/conf.d/{{app_name}}_supervisord.conf"
+    owner: root
+    group: root
+    mode: 0664
+  notify: reload supervisor
+  become: yes
+
+- name: Ensure supervidor is running and enabled on boot.
+  service: "name=supervisor state=started enabled=yes"

@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  ansible:
+    container_name: {{container_name}}-ansible
+    build:
+      context: .
+      dockerfile: ./Dockerfile_jenkins
+    volumes:
+      - ./server:/var/www/ansible
+    environment:
+      - ANSIBLE_HOST_KEY_CHECKING=False

@@ -1,0 +1,2 @@
+library 'iseazy.common'
+standardBuild {}

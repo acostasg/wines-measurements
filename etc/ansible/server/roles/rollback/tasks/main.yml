@@ -1,0 +1,35 @@
+#- name: Disable backend
+#  haproxy:
+#    state: enabled
+#    host: "{{app_name}}_{{backend}}"
+#    backend: "https_{{app_name}}"
+#    weight: '0'
+#    fail_on_not_found: true
+#  become: yes
+
+- name: Get previous releases version
+  shell: echo `ls -1t /var/www/{{app_name}}/{{backend}}/releases | head -n 2 | tail -n 1`
+  register: previous_release_version
+
+- name: Finalize the deploy, removing the unfinished file and switching the symlink
+  deploy_helper:
+    path: "/var/www/{{app_name}}/{{backend}}"
+    release: "/var/www/{{app_name}}/{{backend}}/releases/{{previous_release_version.stdout}}"
+    state: finalize
+    clean: false
+  become: yes
+  become_user: "{{ hostvars[inventory_hostname]['ansible_ssh_user'] }}"
+
+- name: Build and launch app
+  raw: 'cd /var/www/{{app_name}}/{{backend}}/run && docker-compose -f docker-compose.yml down && docker-compose -f docker-compose.yml up -d --build'
+  become: yes
+  become_user: "{{ hostvars[inventory_hostname]['ansible_ssh_user'] }}"
+
+#- name: Enable when finish
+#  haproxy:
+#    state: enabled
+#    host: "{{app_name}}_{{backend}}"
+#    backend: "https_{{app_name}}"
+#    weight: '1'
+#    fail_on_not_found: true
+#  become: yes

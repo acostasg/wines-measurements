@@ -1,0 +1,6 @@
+<?php
+
+declare(strict_types=1);
+
+$fixer = require_once 'vendor/iseazy/build/.php-cs-fixer.php.base';
+return $fixer;

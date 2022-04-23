@@ -1,0 +1,10 @@
+api_doc:
+  path: /doc
+  controller: IsEazy\WinesMesasurements\Ui\Api\Controller\ApiDocumentationController::getIndex
+  methods: [GET]
+
+health-checker:
+  type: annotation
+  prefix: /api/health-checker
+  resource: IsEazy\WinesMesasurements\Ui\Api\Controller\HealthCheckerController
+  trailing_slash_on_root: false

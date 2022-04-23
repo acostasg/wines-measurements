@@ -1,0 +1,52 @@
+version: '3'
+
+services:
+    nginx-{{backend}}:
+        restart: unless-stopped
+        build:
+          context: ../current
+          dockerfile: etc/docker/prod/nginx/Dockerfile
+        container_name: iseazy-{{app_name}}-nginx-{{backend}}
+        restart: always
+        ports:
+          - "{{port_nginx}}:80"
+        depends_on:
+          - fpm-{{backend}}
+        networks:
+          - iseazy
+        extra_hosts:
+          - "host.docker.internal:host-gateway"
+
+    fpm-{{backend}}:
+        restart: unless-stopped
+        container_name: iseazy-{{app_name}}-fpm-{{backend}}
+        build:
+          context: ../current
+          dockerfile: etc/docker/prod/fpm/Dockerfile
+        ports:
+          - "{{port_fpm}}:9000"
+        environment:
+          - SYMFONY_ENV={{environment_app_env}}
+          - APP_ENV={{environment_app_env}}
+          - APP_SECRET={{environment_app_secret}}
+          - APP_DEBUG={{environment_app_debug}}
+          - JWT_SECRET_KEY={{environment_jwt_secret_key}}
+          - JWT_PUBLIC_KEY={{environment_jwt_public_key}}
+          - JWT_PASSPHRASE={{variables['wines_mesasurements_jwt_passphrase_password'] if 'wines_mesasurements_jwt_passphrase_password' in variables else ""}}
+          - DATABASE_URL=mysql://{{variables['mysql_username']}}:{{variables['mysql_password']}}@{{database_host}}:{{database_port}}/{{database_name}}?serverVersion=mariadb-10.4.18
+          - RABBITMQ_URL=amqp://{{variables['rabbitmq_admin_username']}}:{{variables['rabbitmq_admin_password']}}@{{rabbitmq_host}}:{{rabbitmq_port}}
+          - ELASTICSEARCH_ADDRESS=http://{{elasticsearch_host}}:{{elasticsearch_port}}
+        logging:
+          driver: "json-file"
+          options:
+            max-size: "200k"
+            max-file: "10"
+        networks:
+          - iseazy
+        extra_hosts:
+          - "host.docker.internal:host-gateway"
+
+networks:
+  iseazy:
+    external:
+      name: iseazy

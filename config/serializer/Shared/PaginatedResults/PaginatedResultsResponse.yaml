@@ -1,0 +1,21 @@
+IsEazy\Ddd\Application\Pagination\Response\PaginatedResultsResponse:
+  exclusion_policy: ALL
+  properties:
+    currentPageNumber:
+      serialized_name: current_page
+      groups: [Api, UsersMe, Solver]
+    totalPages:
+      groups: [Api, UsersMe, Solver]
+    rowsPerPage:
+      groups: [Api, UsersMe, Solver]
+    totalRows:
+      serialized_name: total_results
+      groups: [Api, UsersMe, Solver]
+    hasNextPage:
+      groups: [Api, UsersMe, Solver]
+    hasPreviousPage:
+      groups: [Api, UsersMe, Solver]
+    needsPagination:
+      groups: [Api, UsersMe, Solver]
+    results:
+      groups: [Api, UsersMe, Solver]

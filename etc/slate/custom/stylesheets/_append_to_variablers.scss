@@ -1,0 +1,30 @@
+
+// Background colors
+$nav-bg: #014261;
+$nav-active-bg: #F3F7F9;
+$nav-subitem-bg: #014261;
+$nav-active-parent-bg: #013d58;
+$main-bg: #F3F7F9;
+$examples-bg: #2d4352;
+$lang-select-bg: #1E2224;
+$lang-select-active-bg: $examples-bg; // feel free to change this to blue or something
+$lang-select-pressed-bg: #152938; // color of language tab bg when mouse is pressed
+$code-bg: #223644;
+$code-annotation-bg: #152938;
+$lang-select-bg: #152938;
+
+// Text colors
+$nav-active-text: #014261;
+
+// Search input
+$nav-footer-border-color: #326286;
+$search-box-border-color: #326286;
+
+// Width
+$examples-width: 50%; // portion of the screen taken up by code examples
+
+// Custom variables
+$aside-notice-text-color: #111111 !default;
+$aside-warning-text-color: #111111 !default;
+$aside-success-text-color: #111111 !default;
+$search-notice-text-color: #111111 !default;
