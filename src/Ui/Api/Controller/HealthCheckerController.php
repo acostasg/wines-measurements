@@ -4,18 +4,17 @@ declare(strict_types=1);
 
 namespace IsEazy\WinesMesasurements\Ui\Api\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Config\Definition\Exception\Exception;
-use Symfony\Component\HttpFoundation\Response;
+use FOS\RestBundle\Controller\Annotations\Get;
+use Fos\RestBundle\Controller\Annotations\View;
+use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use IsEazy\WinesMesasurements\Application\Shared\Response\HealthChecker\HealthCheckerResponse;
 
-class HealthCheckerController extends AbstractController
+class HealthCheckerController extends AbstractFOSRestController
 {
     /**
-     * @Rest\Get("/")
+     * @Get("/")
      *
-     * @Rest\View(serializerGroups={"Api"})
      */
     public function getAction(): HealthCheckerResponse
     {
@@ -23,9 +22,8 @@ class HealthCheckerController extends AbstractController
     }
 
     /**
-     * @Rest\Get("/error")
+     * @Get("/error")
      *
-     * @Rest\View(serializerGroups={"Api"})
      */
     public function getErrorAction(): void
     {
@@ -33,10 +31,9 @@ class HealthCheckerController extends AbstractController
     }
 
     /**
-     * @Rest\Get("/validation-errors")
+     * @Get("/validation-errors")
      *
-     * @Rest\View(serializerGroups={"Api"})
-     *
+     * @throws \Exception
      */
     public function getValidationErrorsAction(): void
     {
@@ -45,6 +42,6 @@ class HealthCheckerController extends AbstractController
             'bar' => 'foo',
         ];
 
-        throw new Exception($errors);
+        throw new \Exception($errors);
     }
 }

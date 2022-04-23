@@ -9,11 +9,11 @@ services:
         autowire: true
         autoconfigure: true
 
-    # Translator event listener
-    IsEazy\WinesMesasurements\Infrastructure\Shared\Symfony\EventListener\TranslatorRequestListener:
-        class: ~
-        public: true
-        arguments: ['%translator_allowed_locales%']
-        tags:
-            - { name: kernel.event_listener, event: kernel.request }
+    # sample event listener
+    #IsEazy\WinesMesasurements\Infrastructure\Shared\Symfony\EventListener\TranslatorRequestListener:
+    #    class: ~
+    #    public: true
+    #    arguments: ['%translator_allowed_locales%']
+    #    tags:
+    #       - { name: kernel.event_listener, event: kernel.request }
 

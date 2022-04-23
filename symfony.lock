@@ -109,6 +109,18 @@
     "friendsofphp/proxy-manager-lts": {
         "version": "v1.0.5"
     },
+    "friendsofsymfony/rest-bundle": {
+        "version": "3.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "2.2",
+            "ref": "fa845143b7e0a4c70aedd1a88c549e6d977e9ae5"
+        },
+        "files": [
+            "config/packages/fos_rest.yaml"
+        ]
+    },
     "gedmo/doctrine-extensions": {
         "version": "v3.1.0"
     },
@@ -186,6 +198,9 @@
             "config/packages/stof_doctrine_extensions.yaml"
         ]
     },
+    "symfony/asset": {
+        "version": "v5.4.7"
+    },
     "symfony/cache": {
         "version": "v5.2.9"
     },
@@ -246,6 +261,9 @@
             ".env"
         ]
     },
+    "symfony/form": {
+        "version": "v5.4.7"
+    },
     "symfony/framework-bundle": {
         "version": "5.2",
         "recipe": {
@@ -272,8 +290,17 @@
     "symfony/http-kernel": {
         "version": "v5.2.9"
     },
+    "symfony/options-resolver": {
+        "version": "v5.4.3"
+    },
+    "symfony/password-hasher": {
+        "version": "v5.3.14"
+    },
     "symfony/polyfill-intl-grapheme": {
         "version": "v1.22.1"
+    },
+    "symfony/polyfill-intl-icu": {
+        "version": "v1.25.0"
     },
     "symfony/polyfill-intl-normalizer": {
         "version": "v1.22.1"
@@ -289,6 +316,12 @@
     },
     "symfony/polyfill-php81": {
         "version": "v1.23.0"
+    },
+    "symfony/property-access": {
+        "version": "v5.4.7"
+    },
+    "symfony/property-info": {
+        "version": "v5.4.7"
     },
     "symfony/proxy-manager-bridge": {
         "version": "v5.2.9"
@@ -307,6 +340,15 @@
             "config/routes.yaml"
         ]
     },
+    "symfony/security-core": {
+        "version": "v5.3.14"
+    },
+    "symfony/security-csrf": {
+        "version": "v5.4.3"
+    },
+    "symfony/security-http": {
+        "version": "v5.4.5"
+    },
     "symfony/service-contracts": {
         "version": "v2.4.0"
     },
@@ -316,6 +358,25 @@
     "symfony/string": {
         "version": "v5.2.8"
     },
+    "symfony/translation-contracts": {
+        "version": "v2.5.1"
+    },
+    "symfony/twig-bridge": {
+        "version": "v5.4.7"
+    },
+    "symfony/twig-bundle": {
+        "version": "5.4",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "5.4",
+            "ref": "bb2178c57eee79e6be0b297aa96fc0c0def81387"
+        },
+        "files": [
+            "config/packages/twig.yaml",
+            "templates/base.html.twig"
+        ]
+    },
     "symfony/var-dumper": {
         "version": "v5.2.8"
     },
@@ -324,5 +385,14 @@
     },
     "symfony/yaml": {
         "version": "v5.2.9"
+    },
+    "twig/twig": {
+        "version": "v2.14.13"
+    },
+    "willdurand/jsonp-callback-validator": {
+        "version": "v2.0.0"
+    },
+    "willdurand/negotiation": {
+        "version": "3.1.0"
     }
 }

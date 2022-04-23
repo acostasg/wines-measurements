@@ -14,7 +14,8 @@ RUN apk add git
 
 RUN apk add unzip
 
-RUN chmod 777 -R var/cache/*
+RUN mkdir -p /var/www/html/var/cache/
+RUN chmod 777 -R /var/www/html/var/cache
 
 ARG W_DOCKER_BUILD_OS_NAME="linux"
 

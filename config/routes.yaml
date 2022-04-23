@@ -8,3 +8,9 @@ health-checker:
   prefix: /api/health-checker
   resource: IsEazy\WinesMesasurements\Ui\Api\Controller\HealthCheckerController
   trailing_slash_on_root: false
+
+auth:
+  type: annotation
+  prefix: /
+  resource: IsEazy\WinesMesasurements\Ui\Twig\Controller\AuthController
+  trailing_slash_on_root: false

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\IsEazy\WinesMesasurements\Application\Shared\Response\HealthChecker;
 
-use IsEazy\DddTestPack\PhpUnit\TestCase;
 use IsEazy\WinesMesasurements\Application\Shared\Response\HealthChecker\HealthCheckerResponse;
+use Negotiation\Tests\TestCase;
 
 class HealthCheckerResponseTest extends TestCase
 {
