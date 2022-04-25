@@ -1,0 +1,6 @@
+IsEazy\WinesMesasurements\Application\Shared\Response\HealthChecker\HealthCheckerResponse:
+    exclusion_policy: ALL
+    properties:
+        statusName:
+            groups: [Api]
+            serialized_name: status

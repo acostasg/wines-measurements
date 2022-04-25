@@ -1,0 +1,11 @@
+- hosts: wines-mesasurements
+  become: yes
+  roles:
+    - { role: rollback, tags: rollback_green, backend: green, port_nginx: 1000, port_fpm: 9001 }
+    - { role: rollback, tags: rollback_blue, backend: blue, port_nginx: 1001, port_fpm: 9002 }
+    - { role: supervisor, tags: supervisor }
+  vars_files:
+    - "vars/vars.yml"
+  vars:
+    repository: git@bitbucket.org:iseazy/wines_mesasurements.git
+    app_name: wines-mesasurements

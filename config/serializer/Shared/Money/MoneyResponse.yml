@@ -1,0 +1,7 @@
+IsEazy\Ddd\Application\Money\Response\MoneyResponse:
+  exclusion_policy: ALL
+  properties:
+    amount:
+      groups: [Api]
+    currencyCode:
+      groups: [Api]

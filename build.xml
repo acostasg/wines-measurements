@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <property name="php_version" value="7.4" />
+    <property name="phpqa.config_dir" value="/app" />
+    <import file="${basedir}/vendor/iseazy/build/build.base.xml"/>
+</project>

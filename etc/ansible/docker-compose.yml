@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  ansible:
+    container_name: wines-mesasurements-ansible
+    build: .
+    restart: unless-stopped
+    volumes:
+      - ./server:/var/www/ansible
+    environment:
+      - ANSIBLE_HOST_KEY_CHECKING=False
+    networks:
+      - default
+      - iseazy
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+networks:
+  iseazy:
+    external:
+      name: iseazy

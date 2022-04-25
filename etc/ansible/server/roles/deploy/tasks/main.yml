@@ -1,0 +1,234 @@
+#- name: Disable backend
+#  haproxy:
+#    state: enabled
+#    host: "{{app_name}}_{{backend}}"
+#    backend: "https_{{app_name}}"
+#    weight: '0'
+#    fail_on_not_found: true
+#  become: yes
+
+- name: Initialize the deploy root and gather facts
+  deploy_helper:
+    path: "/var/www/{{app_name}}/{{backend}}"
+  become: yes
+  become_user: "{{ hostvars[inventory_hostname]['ansible_ssh_user'] }}"
+
+- name: Check if folder "/config/jwt" exists
+  stat:
+    path: '{{ deploy_helper.new_release_path }}/config/jwt'
+  register: jwt_folder_check
+
+- name: Use role passwords with environment suffix
+  include_role:
+    name: passwords
+  with_items:
+    -
+      item: mysql
+      field: password
+    -
+      item: mysql
+      field: username
+    -
+      item: rabbitmq_admin
+      field: password
+    -
+      item: rabbitmq_admin
+      field: username
+
+- name: Use role passwords with environment suffix for jwt
+  include_role:
+    name: passwords
+  with_items:
+    -
+      item: wines_mesasurements_jwt_passphrase
+      field: password
+  when: jwt_folder_check.stat.exists
+
+- name: Use role passwords with no environment suffix
+  include_role:
+    name: passwords
+  vars:
+    use_env: false
+  with_items:
+    -
+      item: docker_login
+      field: username
+    -
+      item: docker_login
+      field: password
+
+- name: Use role passwords files with environments
+  include_role:
+    name: passwords
+    tasks_from: file
+  with_items:
+    -
+      item: wines_mesasurements_jwt_public
+    -
+      item: wines_mesasurements_jwt_private
+  when: jwt_folder_check.stat.exists
+
+- name: get service facts
+  service_facts:
+
+- name: Stop supervisor consumers if supervisor exists
+  raw: 'sudo service supervisor stop'
+  become: yes
+  become_user: "{{ hostvars[inventory_hostname]['ansible_ssh_user'] }}"
+  when: ansible_facts.services['supervisor.service'] is defined
+
+- name: Kill zombie supervisor consumers if supervisor exists
+  raw: 'sudo pkill -f "rabbitmq:consumer wines_mesasurements_"'
+  become: yes
+  become_user: "{{ hostvars[inventory_hostname]['ansible_ssh_user'] }}"
+  when: ansible_facts.services['supervisor.service'] is defined
+
+- name: Create directories, if they do not exist
+  become: yes
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ hostvars[inventory_hostname]['ansible_ssh_user'] }}"
+    group: "{{ hostvars[inventory_hostname]['ansible_ssh_user'] }}"
+    mode: 0775
+  with_items:
+    - "/var/www/{{app_name}}"
+    - "/var/www/{{app_name}}/{{backend}}"
+    - "/var/www/{{app_name}}/{{backend}}/run"
+
+- name: Create directories, if they do not exist
+  become: yes
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ hostvars[inventory_hostname]['ansible_ssh_user'] }}"
+    group: "{{ hostvars[inventory_hostname]['ansible_ssh_user'] }}"
+    mode: 0775
+  with_items:
+    - "{{ deploy_helper.new_release_path }}"
+
+- name: Clone the project to the new release folder
+  git:
+    repo: '{{repository}}'
+    dest: '{{ deploy_helper.new_release_path }}'
+    version: "{{branch}}"
+  become_user: "{{ hostvars[inventory_hostname]['ansible_ssh_user'] }}"
+
+- name: Add an unfinished file, to allow cleanup on successful finalize
+  file:
+    path: '{{ deploy_helper.new_release_path }}/{{ deploy_helper.unfinished_filename }}'
+    state: touch
+  become: yes
+  become_user: "{{ hostvars[inventory_hostname]['ansible_ssh_user'] }}"
+
+- name: Put docker-compose prod file
+  template:
+    src: docker-compose.yml.j2
+    dest: '/var/www/{{app_name}}/{{backend}}/run/docker-compose.yml'
+    owner: "{{ hostvars[inventory_hostname]['ansible_ssh_user'] }}"
+    group: "{{ hostvars[inventory_hostname]['ansible_ssh_user'] }}"
+    mode: 0775
+  become: yes
+  become_user: "{{ hostvars[inventory_hostname]['ansible_ssh_user'] }}"
+
+- name: Create environment for docker-compose
+  template:
+    src: docker-compose-env.j2
+    dest: '/var/www/{{app_name}}/{{backend}}/run/.env'
+    owner: "{{ hostvars[inventory_hostname]['ansible_ssh_user'] }}"
+    group: "{{ hostvars[inventory_hostname]['ansible_ssh_user'] }}"
+    mode: 0775
+  become: yes
+  become_user: "{{ hostvars[inventory_hostname]['ansible_ssh_user'] }}"
+
+- name: Put nginx conf
+  template:
+    src: default.conf.j2
+    dest: '{{ deploy_helper.new_release_path }}/etc/docker/prod/nginx/config/default.conf'
+    owner: "{{ hostvars[inventory_hostname]['ansible_ssh_user'] }}"
+    group: "{{ hostvars[inventory_hostname]['ansible_ssh_user'] }}"
+    mode: 0775
+  become: yes
+  become_user: "{{ hostvars[inventory_hostname]['ansible_ssh_user'] }}"
+
+- name: Put jwt private certificate
+  copy:
+    dest: '{{ deploy_helper.new_release_path }}/config/jwt/private.pem'
+    content: "{{ variables['wines_mesasurements_jwt_private'] }}"
+  become: yes
+  become_user: "{{ hostvars[inventory_hostname]['ansible_ssh_user'] }}"
+  when: jwt_folder_check.stat.exists
+
+- name: Put jwt public certificate
+  copy:
+    dest: '{{ deploy_helper.new_release_path }}/config/jwt/public.pem'
+    content: "{{ variables['wines_mesasurements_jwt_public'] }}"
+  become: yes
+  become_user: "{{ hostvars[inventory_hostname]['ansible_ssh_user'] }}"
+  when: jwt_folder_check.stat.exists
+
+- name: Finalize the deploy, removing the unfinished file and switching the symlink
+  deploy_helper:
+    path: "/var/www/{{app_name}}/{{backend}}"
+    release: "{{ deploy_helper.new_release }}"
+    state: finalize
+    clean: false
+  become: yes
+  become_user: "{{ hostvars[inventory_hostname]['ansible_ssh_user'] }}"
+
+- name: Remove .env files
+  raw: 'rm {{ deploy_helper.new_release_path }}/.env*'
+  become: yes
+  become_user: "{{ hostvars[inventory_hostname]['ansible_ssh_user'] }}"
+
+- name: Create a docker network
+  raw: 'docker network inspect iseazy >/dev/null 2>&1 || docker network create --driver bridge iseazy'
+  become: yes
+  become_user: "{{ hostvars[inventory_hostname]['ansible_ssh_user'] }}"
+
+- name: Docker login
+  raw: 'docker login --username "{{ variables["docker_login_username"] }}" --password "{{ variables["docker_login_password"] }}"'
+  become: yes
+  become_user: "{{ hostvars[inventory_hostname]['ansible_ssh_user'] }}"
+
+- name: Build and launch app
+  raw: 'cd /var/www/{{app_name}}/{{backend}}/run && docker-compose -f docker-compose.yml down && docker-compose -f docker-compose.yml build --pull && docker-compose -f docker-compose.yml up -d'
+  become: yes
+  become_user: "{{ hostvars[inventory_hostname]['ansible_ssh_user'] }}"
+
+- name: Execute composer install prod
+  raw: 'cd /var/www/{{app_name}}/{{backend}}/run && docker-compose exec -T fpm-{{backend}} composer install --no-dev --verbose --prefer-dist --no-progress --no-interaction --optimize-autoloader'
+  become: yes
+  become_user: "{{ hostvars[inventory_hostname]['ansible_ssh_user'] }}"
+  when:
+    - environment_app_env == 'prod'
+
+- name: Execute composer install dev
+  raw: 'cd /var/www/{{app_name}}/{{backend}}/run && docker-compose exec -T fpm-{{backend}} composer install --verbose --prefer-dist --no-progress --no-interaction --optimize-autoloader'
+  become: yes
+  become_user: "{{ hostvars[inventory_hostname]['ansible_ssh_user'] }}"
+  when:
+    - environment_app_env != 'prod'
+
+- name: Execute start-up PROD command
+  raw: 'cd /var/www/{{app_name}}/{{backend}}/run && docker-compose exec --user="www-data:www-data" -T fpm-{{backend}} composer startup-prod'
+  become: yes
+  become_user: "{{ hostvars[inventory_hostname]['ansible_ssh_user'] }}"
+
+- name: Clean old folders
+  deploy_helper:
+    path: "/var/www/{{app_name}}/{{backend}}"
+    release: "{{ deploy_helper.new_release }}"
+    state: "clean"
+    keep_releases: 4
+  become: yes
+  become_user: "{{ hostvars[inventory_hostname]['ansible_ssh_user'] }}"
+
+#- name: Enable backend
+#  haproxy:
+#    state: enabled
+#    host: "{{app_name}}_{{backend}}"
+#    backend: "https_{{app_name}}"
+#    weight: '1'
+#    fail_on_not_found: true
+#  become: yes

@@ -1,0 +1,37 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+
+imports:
+    - { resource: services/aliases.yaml }
+    - { resource: services/use_cases.yaml }
+    - { resource: services/translator.yaml }
+    - { resource: services/domain_events.yaml }
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    IsEazy\WinesMesasurements\:
+        resource: '%kernel.project_dir%/src/'
+        exclude:
+            - '%kernel.project_dir%/src/{Application,Domain}'
+            - '%kernel.project_dir%/src/Infrastructure/Shared/Migrations'
+            - '%kernel.project_dir%/src/Infrastructure/Shared/Symfony/Kernel.php'
+            - '%kernel.project_dir%/src/Infrastructure/Shared/Symfony/EventListener'
+
+    IsEazy\WinesMesasurements\Application\:
+        resource: '%kernel.project_dir%/src/Application/*/*/{*/*DataTransformer.php,*/*Client.php,Service/*/*Creator.php,Service/*/*Finder.php,Service/*/*Calculator.php,*/*/*Updater.php,Service/*/*Transformer.php}'
+
+    IsEazy\WinesMesasurements\Domain\:
+        resource: '%kernel.project_dir%/src/Domain/*/{Service,Repository,Validator}/{*/*Creator.php,*/*Finder.php,*/*Getter.php,*/*Updater.php,*/*Calculator.php,*/*Deleter.php,*Validator.php}'
+
+    IsEazy\WinesMesasurements\Infrastructure\:
+        resource: '%kernel.project_dir%/src/Infrastructure/*/{Repository,Logger}/{*Repository.php,Logger.php}'

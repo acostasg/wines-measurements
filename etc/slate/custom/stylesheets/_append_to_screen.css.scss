@@ -1,0 +1,26 @@
+// Custom styles
+//.toc-wrapper .search-results { background-color: #014261; }
+//.toc-wrapper { background-color: #004e72; }
+//.toc-wrapper > .search input{ background-color: #004e72; }
+//.toc-wrapper .toc-link.active-parent, .toc-wrapper .toc-list-h2 { background-color: #014261; }
+
+.content {
+  table {
+    aside {
+      color: $aside-notice-text-color;
+
+      &.warning {
+        color: $aside-warning-text-color;
+      }
+
+      &.success {
+        color: $aside-success-text-color;
+      }
+
+      & code {
+        font-weight: 600;
+        background-color: rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
+}

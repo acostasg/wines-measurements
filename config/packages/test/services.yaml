@@ -1,0 +1,10 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  Tests\IsEazy\WinesMesasurements\Infrastructure\Shared\NelmioAlice\Provider\:
+    resource: '%kernel.project_dir%/tests/src/Infrastructure/Shared/NelmioAlice/Provider/{*Provider.php,*/*Provider.php}'
+    tags:
+      - { name: nelmio_alice.faker.provider }

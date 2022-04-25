@@ -1,0 +1,22 @@
+jms_serializer:
+  handlers:
+    datetime:
+      default_format: "Y-m-d\\TH:i:sP"
+      default_timezone: "UTC"
+
+  visitors:
+    xml_serialization:
+      format_output: '%kernel.debug%'
+
+  metadata:
+    auto_detection: false
+    directories:
+      HealthChecker:
+        namespace_prefix: 'IsEazy\WinesMesasurements\Application\Shared\Response\HealthChecker'
+        path: "%kernel.project_dir%/config/serializer/HealthChecker"
+      Money:
+        namespace_prefix: 'IsEazy\Ddd\Application\Money\Response'
+        path: "%kernel.project_dir%/config/serializer/Shared/Money"
+      PaginatedResults:
+        namespace_prefix: 'IsEazy\Ddd\Application\Pagination\Response'
+        path: "%kernel.project_dir%/config/serializer/Shared/PaginatedResults"

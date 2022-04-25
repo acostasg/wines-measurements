@@ -1,0 +1,23 @@
+wines-mesasurements:
+  hosts:
+    wines_mesasurements1:
+      ansible_host: xx.xx.xx.xx
+      ansible_ssh_user: iseazy
+      server_name: wines_mesasurements_1
+all:
+  vars:
+    passwords_environment: 'dev'
+    environment: 'staging'
+    branch: "{{ lookup('env', 'ANSIBLE_DEPLOY_BRANCH') | default('develop', True) }}"
+    environment_app_env: 'prod'
+    environment_app_secret: '369b7f60458cdfb3fc2edee2edf67b09'
+    environment_app_debug: 'false'
+    environment_jwt_secret_key: "%kernel.project_dir%/config/jwt/private.pem"
+    environment_jwt_public_key: "%kernel.project_dir%/config/jwt/public.pem"
+    database_port: 3306
+    database_name: "wines_mesasurements"
+    database_host: "host.docker.internal"
+    rabbitmq_port: 5672
+    rabbitmq_host: "host.docker.internal"
+    elasticsearch_port: "9200"
+    elasticsearch_host: "host.docker.internal"

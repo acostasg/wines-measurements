@@ -1,0 +1,11 @@
+#[group:wines_mesasurements_consumers]
+#programs=wines_mesasurements_input,wines_mesasurements_output,wines_mesasurements_input_history
+#
+#[program:time_tracer_input]
+#command=docker exec -t iseazy-wines-mesasurements-fpm-green php /app/bin/console rabbitmq:consumer wines_mesasurements -w --messages=20000
+#user={{hostvars[inventory_hostname]['ansible_ssh_user']}}
+#process_name=%(program_name)s%(process_num)02d
+#numprocs=1
+#startsecs=0
+#autostart=true
+#autorestart=true
