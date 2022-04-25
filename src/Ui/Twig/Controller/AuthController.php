@@ -9,10 +9,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class AuthController extends AbstractController
 {
     /**
-     * @Get("/login")
+     * @Get("/")
      *
      */
-    public function login(): Response
+    public function loginAction(): Response
     {
         return $this->render('Auth/login.html.twig');
     }

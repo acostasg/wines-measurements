@@ -3,9 +3,10 @@
 namespace IsEazy\WinesMesasurements\Domain\User\Model;
 
 use IsEazy\WinesMesasurements\Domain\Shared\Model\AggregateRoot;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Uid\Uuid;
 
-class User extends AggregateRoot
+class User extends AggregateRoot implements UserInterface
 {
     private Uuid $id;
     private string $email;
@@ -39,4 +40,43 @@ class User extends AggregateRoot
         return $this->password;
     }
 
+    public function getRoles()
+    {
+        // TODO: Implement getRoles() method.
+        return ['ROLE_USER'];
+    }
+
+    public function getSalt()
+    {
+        // TODO: Implement getSalt() method.
+        return 'test';
+    }
+
+    public function eraseCredentials()
+    {
+        // TODO: Implement eraseCredentials() method.
+    }
+
+    public function getUsername()
+    {
+        // TODO: Implement getUsername() method.
+        return $this->email;
+    }
+
+    public function __call($name, $arguments)
+    {
+        // TODO: Implement @method string getUserIdentifier()
+    }
+
+    public static function create(
+        string $email,
+        string $password
+    ): self
+    {
+        return new self(
+            Uuid::v4(),
+            $email,
+            $password
+        );
+    }
 }

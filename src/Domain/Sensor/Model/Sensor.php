@@ -49,4 +49,24 @@ class Sensor extends AggregateRoot
     {
         return $this->typeSensor;
     }
+
+    public static function create(
+        User $owner,
+        string $valor,
+        TypeSensor $typeSensor
+    ): self
+    {
+        $id = Uuid::v4();
+
+        $sensor = new self(
+            $id,
+            $owner,
+            $valor,
+            $typeSensor
+        );
+
+        $sensor->record(new SensorWasCreated($id, $owner, $valor, $typeSensor));
+
+        return $sensor;
+    }
 }

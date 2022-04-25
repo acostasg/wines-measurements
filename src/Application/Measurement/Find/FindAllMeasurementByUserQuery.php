@@ -6,16 +6,16 @@ use Symfony\Component\Uid\Uuid;
 
 class FindAllMeasurementByUserQuery
 {
-    private Uuid $userId;
+    private string $userId;
 
     public function __construct(
-        Uuid $userId
+        string $userId
     )
     {
         $this->userId = $userId;
     }
 
-    public function getUserId(): Uuid
+    public function getUserId(): string
     {
         return $this->userId;
     }

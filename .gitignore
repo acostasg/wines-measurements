@@ -38,3 +38,8 @@ etc/slate/app
 !/etc/ansible/server/vars/.gitkeep
 /src/Ui/Cli/Example/
 /config/jwt/*.pem
+
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###

@@ -34,5 +34,31 @@ class TypeMeasurement extends AggregateRoot
     {
         return $this->description;
     }
+
+    public static function create(
+        string $name,
+        string $description
+    ): TypeMeasurement {
+        $id = Uuid::v4();
+        $typeMeasurement = new TypeMeasurement(
+            $id,
+            $name,
+            $description
+        );
+
+        /**
+         * sample to use event store
+         *
+         * $typeMeasurement->record(
+            new TypeMeasurementWasCreated(
+                $id,
+                $name,
+                $description
+            )
+        );*/
+
+        return $typeMeasurement;
+    }
+
 }
 

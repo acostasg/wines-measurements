@@ -34,6 +34,7 @@
         "symfony/form": "5.4.*",
         "symfony/framework-bundle": "5.4.*",
         "symfony/proxy-manager-bridge": "5.4.*",
+        "symfony/security-bundle": "5.4.*",
         "symfony/security-core": "5.4.*",
         "symfony/security-csrf": "5.4.*",
         "symfony/security-http": "5.4.*",
@@ -43,7 +44,8 @@
         "twig/twig": "^2.0"
     },
     "require-dev": {
-        "dama/doctrine-test-bundle": "^6.5"
+        "dama/doctrine-test-bundle": "^6.5",
+        "phpunit/phpunit": "^9.5"
     },
     "config": {
         "optimize-autoloader": true,

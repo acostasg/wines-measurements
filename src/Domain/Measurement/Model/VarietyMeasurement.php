@@ -31,4 +31,27 @@ class VarietyMeasurement extends AggregateRoot
         return $this->name;
     }
 
+    public static function create(
+        string $name
+    ): VarietyMeasurement
+    {
+        $id = Uuid::v4();
+
+        $varietyMeasurement = new VarietyMeasurement(
+            $id,
+            $name
+        );
+
+        /**
+          // sample event
+        $varietyMeasurement->record(
+            new VarietyMeasurementCreated(
+                $id,
+                $name
+            )
+        );*/
+
+        return $varietyMeasurement;
+    }
+
 }

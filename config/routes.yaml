@@ -11,6 +11,12 @@ health-checker:
 
 auth:
   type: annotation
-  prefix: /
+  prefix: /login
   resource: IsEazy\WinesMesasurements\Ui\Twig\Controller\AuthController
+  trailing_slash_on_root: false
+
+default:
+  type: annotation
+  prefix: /
+  resource: IsEazy\WinesMesasurements\Ui\Twig\Controller\DefaultController
   trailing_slash_on_root: false

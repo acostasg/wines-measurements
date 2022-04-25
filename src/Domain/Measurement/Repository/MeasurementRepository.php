@@ -7,7 +7,7 @@ use IsEazy\WinesMesasurements\Domain\User\Model\User;
 
 interface MeasurementRepository
 {
-    public function findById(int $id): Measurement;
+    public function findById(int $id): ?Measurement;
 
     /**
      * @return Measurement[]
