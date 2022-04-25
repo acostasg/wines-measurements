@@ -2,25 +2,34 @@
 
 namespace IsEazy\WinesMesasurements\Domain\Measurement\Service\Create;
 
+use IsEazy\WinesMesasurements\Domain\Measurement\Exception\MeasurementLimitException;
 use IsEazy\WinesMesasurements\Domain\Measurement\Model\Measurement;
 use IsEazy\WinesMesasurements\Domain\Measurement\Model\TypeMeasurement;
 use IsEazy\WinesMesasurements\Domain\Measurement\Model\VarietyMeasurement;
 use IsEazy\WinesMesasurements\Domain\Measurement\Repository\MeasurementRepository;
+use IsEazy\WinesMesasurements\Domain\Measurement\Service\Count\MeasurementByOwnerCounter;
 use IsEazy\WinesMesasurements\Domain\User\Model\User;
 use IsEazy\WinesMesasurements\Domain\Wine\Model\Wine;
 
 class MeasurementCreator
 {
+    private const MEASUREMENT_COUNT = 1;
 
     private MeasurementRepository $measurementRepository;
+    private MeasurementByOwnerCounter $measurementByOwnerCounter;
 
     public function __construct(
-        MeasurementRepository $measurementRepository
+        MeasurementRepository     $measurementRepository,
+        MeasurementByOwnerCounter $measurementByOwnerCounter
     )
     {
         $this->measurementRepository = $measurementRepository;
+        $this->measurementByOwnerCounter = $measurementByOwnerCounter;
     }
 
+    /**
+     * @throws MeasurementLimitException
+     */
     public function __invoke(
         User               $owner,
         Wine               $wine,
@@ -34,6 +43,12 @@ class MeasurementCreator
         string             $observations
     ) : Measurement
     {
+        $measurementCount = $this->measurementByOwnerCounter->__invoke($owner);
+
+        if ($measurementCount >= self::MEASUREMENT_COUNT) {
+            throw new MeasurementLimitException();
+        }
+
         $measurement = Measurement::create(
             $owner,
             $wine,

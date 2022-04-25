@@ -38,4 +38,18 @@ class Wine extends AggregateRoot
     {
         return $this->description;
     }
+
+    public static function create(
+        string $name,
+        string $description
+    ): self
+    {
+        $id = Uuid::v4();
+
+        return new self(
+            $id,
+            $name,
+            $description
+        );
+    }
 }

@@ -2,9 +2,16 @@
 
 namespace IsEazy\WinesMesasurements\Application\Measurement\Create;
 
+use IsEazy\WinesMesasurements\Domain\Measurement\Exception\TypeMeasurementByNameNotFound;
+use IsEazy\WinesMesasurements\Domain\Measurement\Exception\VarietyMeasurementByNameNotFound;
 use IsEazy\WinesMesasurements\Domain\Measurement\Model\Measurement;
 use IsEazy\WinesMesasurements\Domain\Measurement\Service\Create\MeasurementCreator;
+use IsEazy\WinesMesasurements\Domain\Measurement\Service\Find\TypeMeasurementByNameFinder;
+use IsEazy\WinesMesasurements\Domain\Measurement\Service\Find\VarietyMeasurementByNameFinder;
+use IsEazy\WinesMesasurements\Domain\User\Exception\UserNotFound;
 use IsEazy\WinesMesasurements\Domain\User\Service\Get\UserGetter;
+use IsEazy\WinesMesasurements\Domain\Wine\Exception\WineNotFound;
+use IsEazy\WinesMesasurements\Domain\Wine\Service\Get\WineGetter;
 use Symfony\Component\Uid\Uuid;
 
 class CreateMeasurementCommandHandler
@@ -12,29 +19,36 @@ class CreateMeasurementCommandHandler
     private MeasurementCreator $measurementCreator;
     private UserGetter $userGetter;
     private WineGetter $wineGetter;
-    private FindVarietyMeasurementByName $findVarietyMeasurementByName;
-    private FindTypeMeasurementByName $findTypeMeasurementByName;
+    private VarietyMeasurementByNameFinder $varietyMeasurementByNameFinder;
+    private TypeMeasurementByNameFinder $typeMeasurementByNameFinder;
 
 
     public function __construct(
-        MeasurementCreator $measurementCreator,
-        UserGetter $userGetter,
-        WineGetter $wineGetter,
-        FindVarietyMeasurementByName $findVarietyMeasurementByName,
-        FindTypeMeasurementByName $findTypeMeasurementByName
+        MeasurementCreator             $measurementCreator,
+        UserGetter                     $userGetter,
+        WineGetter                     $wineGetter,
+        VarietyMeasurementByNameFinder $varietyMeasurementByNameFinder,
+        TypeMeasurementByNameFinder    $typeMeasurementByNameFinder
     )
     {
         $this->measurementCreator = $measurementCreator;
         $this->userGetter = $userGetter;
         $this->wineGetter = $wineGetter;
 
-        $this->findVarietyMeasurementByName = $findVarietyMeasurementByName;
-        $this->findTypeMeasurementByName = $findTypeMeasurementByName;
+        $this->varietyMeasurementByNameFinder = $varietyMeasurementByNameFinder;
+        $this->typeMeasurementByNameFinder = $typeMeasurementByNameFinder;
     }
 
+    /**
+     * @throws UserNotFound
+     * @throws WineNotFound
+     * @throws VarietyMeasurementByNameNotFound
+     * @throws TypeMeasurementByNameNotFound
+     */
     public function __invoke(
         CreateMeasurementCommand $command
-    ) : Measurement {
+    ): Measurement
+    {
 
         $owner = $this->userGetter->__invoke(
             Uuid::fromString($command->getUserId())
@@ -44,11 +58,11 @@ class CreateMeasurementCommandHandler
             Uuid::fromString($command->getWineId())
         );
 
-        $varietyMeasurement = $this->findVarietyMeasurementByName->__invoke(
+        $varietyMeasurement = $this->varietyMeasurementByNameFinder->__invoke(
             $command->getVarietyMeasurement()
         );
 
-        $typeMeasurement = $this->findTypeMeasurementByName->__invoke(
+        $typeMeasurement = $this->typeMeasurementByNameFinder->__invoke(
             $command->getMeasurementType()
         );
 

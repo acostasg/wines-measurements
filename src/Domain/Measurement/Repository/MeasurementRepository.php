@@ -14,6 +14,8 @@ interface MeasurementRepository
      */
     public function findAllByOwner(User $owner): array;
 
+    public function findCountByOwner(User $owner): int;
+
     public function save(Measurement $measurement): void;
 
     public function remove(Measurement $measurement): void;
